@@ -3,6 +3,7 @@ const app = express();
 const config = require("./config/config.json");
 
 const { Sequelize } = require("sequelize");
+const { DataTypes } = require("sequelize"); // Import the built-in data types
 
 const sequelize = new Sequelize(
   config.development.database,
