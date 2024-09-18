@@ -16,6 +16,36 @@ const sequelize = new Sequelize(
   }
 );
 
+// Middleware
+app.use(express.json());
+
+// Routes
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.get("/users", async (req, res) => {
+  const users = await db.User.findAll();
+  res.json(users);
+});
+
+app.post("/users", async (req, res) => {
+  const user = await db.User.create(req.body);
+  res.json(user);
+});
+
+app.get("/users/:id", async (req, res) => {
+  const user = await db.User.findByPk(req.params.id);
+  res.json(user);
+});
+
+app.put("/users/:id", async (req, res) => {
+  const user = await db.User.findByPk(req.params.id);
+  user.update(req.body);
+  res.json(user);
+});
+
+
 // Tester la connexion
 sequelize
   .authenticate()
