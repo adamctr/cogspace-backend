@@ -10,6 +10,7 @@ const sequelize = new Sequelize(
   config.development.password,
   {
     host: config.development.host,
+    port: config.development.port,
     dialect: config.development.dialect,
   }
 );
