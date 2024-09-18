@@ -2,8 +2,8 @@ const express = require("express");
 const app = express();
 const config = require("./config/config.json");
 
-const { Sequelize } = require("sequelize");
-const { DataTypes } = require("sequelize"); // Import the built-in data types
+const { Sequelize, DataTypes } = require("sequelize");
+const db = require("./models");
 
 const sequelize = new Sequelize(
   config.development.database,
@@ -27,6 +27,8 @@ sequelize
   });
 
 // Démarrer le serveur
-app.listen(3000, () => {
-  console.log("Serveur démarré sur le port 3000");
+db.sequelize.sync({ alter: true }).then(() => {
+  app.listen(3000, () => {
+    console.log("Serveur démarré sur le port 3000");
+  });
 });
