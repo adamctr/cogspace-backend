@@ -25,13 +25,27 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
-  const users = await db.User.findAll();
+  const users = await db.Utilisateurs.findAll();
   res.json(users);
 });
 
-app.post("/users", async (req, res) => {
-  const user = await db.User.create(req.body);
-  res.json(user);
+app.post("/utilisateurs", async (req, res) => {
+  try {
+    // Récupérer les données envoyées dans le body de la requête
+    const { nom, email } = req.body;
+
+    // Créer un nouvel utilisateur avec Sequelize
+    const nouvelUtilisateur = await Utilisateurs.create({ nom, email });
+
+    // Retourner une réponse avec les détails de l'utilisateur créé
+    res.status(201).json(nouvelUtilisateur);
+  } catch (err) {
+    // Gérer les erreurs et retourner un statut 500 si quelque chose ne va pas
+    res.status(500).json({
+      error: "Erreur lors de la création de l'utilisateur",
+      message: err.message,
+    });
+  }
 });
 
 app.get("/users/:id", async (req, res) => {
@@ -44,7 +58,6 @@ app.put("/users/:id", async (req, res) => {
   user.update(req.body);
   res.json(user);
 });
-
 
 // Tester la connexion
 sequelize
