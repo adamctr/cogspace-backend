@@ -1,4 +1,5 @@
-const Categorie = require("../models/Categorie");
+const { sequelize, DataTypes } = require("../app");
+const Categorie = require("../models/Categorie")(sequelize, DataTypes);
 
 exports.getAllCategories = async (req, res) => {
   try {
