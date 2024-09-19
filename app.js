@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, Op } = require('sequelize');
 
 const db = require("./models");
 const config = require("./config/config.json");
@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
     dialect: config.development.dialect,
   }
 );
-module.exports = {sequelize, DataTypes};
+module.exports = {sequelize, DataTypes, Op};
 
 // Middleware pour parser les données JSON
 app.use(express.json());

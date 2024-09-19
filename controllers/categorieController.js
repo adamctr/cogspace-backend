@@ -1,9 +1,16 @@
-const { sequelize, DataTypes } = require("../app");
+const { sequelize, DataTypes, Op } = require("../app");
 const Categorie = require("../models/Categorie")(sequelize, DataTypes);
 
 exports.getAllCategories = async (req, res) => {
   try {
-    const categories = await Categorie.findAll();
+    const categories = await Categorie.findAll({
+      // where: {
+      // CategorieParentID: {
+      //   [Op.between]: [10, 20]
+      //   }
+      // }s
+      limit: 10,
+    });
     if (!categories || categories.length === 0) {
       return res.status(404).json({ message: "Aucune catégorie trouvée" });
     }
