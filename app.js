@@ -8,6 +8,19 @@ const ficheRoutes = require("./routes/ficheRoutes");
 const categorieRoutes = require("./routes/categorieRoutes");
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
 
+// Initialisation de Sequelize
+const sequelize = new Sequelize(
+  config.development.database,
+  config.development.username,
+  config.development.password,
+  {
+    host: config.development.host,
+    port: config.development.port,
+    dialect: config.development.dialect,
+  }
+);
+
+
 // Middleware pour parser les données JSON
 app.use(express.json());
 
@@ -26,11 +39,6 @@ db.sequelize.sync().then((req) => {
   app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${PORT}`);
   });
-});
-
-const sequelize = new Sequelize('database', 'username', 'password', {
-  host: 'localhost',
-  dialect: 'mysql' // or 'sqlite', 'postgres', 'mssql'
 });
 
 sequelize.authenticate()
