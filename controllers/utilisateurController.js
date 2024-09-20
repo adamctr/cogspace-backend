@@ -1,6 +1,7 @@
 const { sequelize, DataTypes } = require("../app");
 const Utilisateur = require("../models/Utilisateurs")(sequelize, DataTypes);
 const Fiche = require("../models/Fiche")(sequelize, DataTypes); // Relation entre Utilisateur et Fiche
+const crypto = require('crypto');
 
 // Obtenir tous les utilisateurs
 exports.getAllUtilisateurs = async (req, res) => {
@@ -52,7 +53,20 @@ exports.getFiches = async (req, res) => {
 // Créer un nouvel utilisateur
 exports.createUtilisateur = async (req, res) => {
   try {
-    const nouvelUtilisateur = await Utilisateur.create(req.body);
+    const { username, name, passwd } = req.body;
+
+    if (!username || !name || !passwd) {
+      return res.status(400).json({ message: "Les champs username, name et passwd sont requis" });
+    }
+
+    const hashedPasswd = crypto.createHash('sha256').update(passwd).digest('hex');
+
+    const nouvelUtilisateur = await Utilisateur.create({
+      username,
+      name,
+      passwd: hashedPasswd
+    });
+
     res.status(201).json(nouvelUtilisateur);
   } catch (error) {
     console.error("Erreur lors de la création de l'utilisateur:", error);
