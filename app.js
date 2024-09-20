@@ -23,14 +23,14 @@ module.exports = {sequelize, DataTypes, Op};
 app.use(express.json());
 
 // Requires des routes
-// const ficheRoutes = require("./routes/ficheRoutes");
+const ficheRoutes = require("./routes/ficheRoutes");
 const categorieRoutes = require("./routes/categorieRoutes");
-// const utilisateurRoutes = require("./routes/utilisateurRoutes");
+const utilisateurRoutes = require("./routes/utilisateurRoutes");
 
 // Routes
-// app.use("/fiches", ficheRoutes); // Routes pour les fiches
+app.use("/fiches", ficheRoutes); // Routes pour les fiches
 app.use("/categories", categorieRoutes); // Routes pour les catégories
-// app.use("/utilisateurs", utilisateurRoutes); // Routes pour les utilisateurs
+app.use("/utilisateurs", utilisateurRoutes); // Routes pour les utilisateurs
 
 // Gérer les erreurs 404
 app.use((req, res, next) => {

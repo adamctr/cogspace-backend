@@ -27,7 +27,4 @@ router.put("/:id", categorieController.updateCategorie);
 // Route pour supprimer une catégorie
 router.delete("/:id", categorieController.deleteCategorie);
 
-// Route pour créer une nouvelle catégorie
-// router.post("/", categorieController.createCategorie);
-
 module.exports = router;
