@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { Sequelize, DataTypes, Op } = require('sequelize');
+const { Sequelize, DataTypes, Op } = require("sequelize");
 
 const db = require("./models");
 const config = require("./config/config.json");
@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
     dialect: config.development.dialect,
   }
 );
-module.exports = {sequelize, DataTypes, Op};
+module.exports = { sequelize, DataTypes, Op };
 
 // Middleware pour parser les données JSON
 app.use(express.json());
@@ -28,21 +28,22 @@ const categorieRoutes = require("./routes/categorieRoutes");
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
 
 // Routes
-app.use("/fiches", ficheRoutes); // Routes pour les fiches
-app.use("/categories", categorieRoutes); // Routes pour les catégories
-app.use("/utilisateurs", utilisateurRoutes); // Routes pour les utilisateurs
+app.use("/post", ficheRoutes); // Routes pour les fiches
+app.use("/category", categorieRoutes); // Routes pour les catégories
+app.use("/user", utilisateurRoutes); // Routes pour les utilisateurs
 
 // Gérer les erreurs 404
 app.use((req, res, next) => {
   res.status(404).json({ message: "Ressource non trouvée" });
 });
 
-sequelize.authenticate()
+sequelize
+  .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    console.log("Connection has been established successfully.");
   })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
+  .catch((err) => {
+    console.error("Unable to connect to the database:", err);
   });
 
 // Lancer le serveur

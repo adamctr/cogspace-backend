@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const utilisateurController = require("../controllers/utilisateurController");
+const { utilisateurValidator } = require("../middlewares/validation");
 
 // Route pour obtenir tous les utilisateurs
 router.get("/", utilisateurController.getAllUtilisateurs);
@@ -10,10 +11,14 @@ router.get("/", utilisateurController.getAllUtilisateurs);
 router.get("/:id", utilisateurController.getUtilisateurById);
 
 // Route pour obtenir les fiches d'un utilisateur
-router.get("/:id/fiches", utilisateurController.getFiches);
+router.get("/:id/post", utilisateurController.getFiches);
 
 // Route pour créer un nouvel utilisateur
-router.post("/", utilisateurController.createUtilisateur);
+router.post(
+  "/",
+  utilisateurValidator.createUserValidator,
+  utilisateurController.createUtilisateur
+);
 
 // Route pour mettre à jour un utilisateur
 router.put("/:id", utilisateurController.updateUtilisateur);

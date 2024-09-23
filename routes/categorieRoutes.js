@@ -10,13 +10,13 @@ router.get("/", categorieController.getAllCategories);
 router.get("/:id", categorieController.getCategorieById);
 
 // Route pour obtenir les catégories enfants d'une catégorie
-router.get("/:id/enfants", categorieController.getEnfants);
+router.get("/:id/child", categorieController.getEnfants);
 
 // Route pour obtenir les catégories parent d'une catégorie
 router.get("/:id/parent", categorieController.getParent);
 
 // Route pour obtenir les fiches d'une catégorie
-router.get("/:id/fiches", categorieController.getFiches);
+router.get("/:id/post", categorieController.getFiches);
 
 // Route pour créer une nouvelle catégorie
 router.post("/", categorieController.createCategorie);

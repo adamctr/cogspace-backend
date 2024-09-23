@@ -10,7 +10,7 @@ router.get("/", ficheController.getAllfiches);
 router.get("/:id", ficheController.getFicheById);
 
 // Route pour obtenir les catégories d'une fiche
-router.get("/:id/categories", ficheController.getCategories);
+router.get("/:id/category", ficheController.getCategories);
 
 // Route pour créer une nouvelle fiche
 router.post("/", ficheController.createFiche);
