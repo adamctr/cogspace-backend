@@ -3,6 +3,9 @@ const router = express.Router();
 
 const utilisateurController = require("../controllers/utilisateurController");
 const { utilisateurValidator } = require("../middlewares/validation");
+const {
+  handleValidationErrors,
+} = require("../middlewares/handleValidationErrors");
 
 // Route pour obtenir tous les utilisateurs
 router.get("/", utilisateurController.getAllUtilisateurs);
@@ -17,6 +20,7 @@ router.get("/:id/post", utilisateurController.getFiches);
 router.post(
   "/",
   utilisateurValidator.createUserValidator,
+  handleValidationErrors,
   utilisateurController.createUtilisateur
 );
 

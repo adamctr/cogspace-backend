@@ -1,7 +1,7 @@
 const { sequelize, DataTypes } = require("../app");
 const Utilisateur = require("../models/Utilisateurs")(sequelize, DataTypes);
 const Fiche = require("../models/Fiche")(sequelize, DataTypes); // Relation entre Utilisateur et Fiche
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 // Obtenir tous les utilisateurs
 exports.getAllUtilisateurs = async (req, res) => {
@@ -20,6 +20,7 @@ exports.getAllUtilisateurs = async (req, res) => {
 // Obtenir un utilisateur par son ID
 exports.getUtilisateurById = async (req, res) => {
   try {
+    console.log(req.params.id);
     const utilisateur = await Utilisateur.findByPk(req.params.id);
     if (!utilisateur) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -35,36 +36,46 @@ exports.getUtilisateurById = async (req, res) => {
 exports.getFiches = async (req, res) => {
   try {
     const utilisateur = await Utilisateur.findByPk(req.params.id, {
-      include: [{
-        model: Fiche, // Assuming the association is already defined
-        as: "Fiches" // Adjust if needed
-      }]
+      include: [
+        {
+          model: Fiche, // Assuming the association is already defined
+          as: "Fiches", // Adjust if needed
+        },
+      ],
     });
     if (!utilisateur) {
-      return res.status(404).json({ message: "Utilisateur ou fiches non trouvés" });
+      return res
+        .status(404)
+        .json({ message: "Utilisateur ou fiches non trouvés" });
     }
     res.status(200).json(utilisateur.Fiches);
   } catch (error) {
-    console.error("Erreur lors de la récupération des fiches de l'utilisateur:", error);
+    console.error(
+      "Erreur lors de la récupération des fiches de l'utilisateur:",
+      error
+    );
     res.status(500).json({ message: "Erreur serveur interne" });
   }
 };
 
 // Créer un nouvel utilisateur
 exports.createUtilisateur = async (req, res) => {
+  console.log(req.body);
+
   try {
-    const { username, name, passwd } = req.body;
+    const { Nom, Prenom, Email, MotDePasse } = req.body;
+    // console.log(Nom, Prenom, Email, MotDePasse);
 
-    if (!username || !name || !passwd) {
-      return res.status(400).json({ message: "Les champs username, name et passwd sont requis" });
-    }
-
-    const hashedPasswd = crypto.createHash('sha256').update(passwd).digest('hex');
+    const hashedPasswd = crypto
+      .createHash("sha256")
+      .update(MotDePasse)
+      .digest("hex");
 
     const nouvelUtilisateur = await Utilisateur.create({
-      username,
-      name,
-      passwd: hashedPasswd
+      Nom,
+      Prenom,
+      Email,
+      MotDePasse: hashedPasswd,
     });
 
     res.status(201).json(nouvelUtilisateur);
@@ -78,10 +89,12 @@ exports.createUtilisateur = async (req, res) => {
 exports.updateUtilisateur = async (req, res) => {
   try {
     const [updatedRows] = await Utilisateur.update(req.body, {
-      where: { ID: req.params.id }
+      where: { ID: req.params.id },
     });
     if (updatedRows === 0) {
-      return res.status(404).json({ message: "Utilisateur non trouvé ou pas de mise à jour" });
+      return res
+        .status(404)
+        .json({ message: "Utilisateur non trouvé ou pas de mise à jour" });
     }
     res.status(200).json({ message: "Utilisateur mis à jour avec succès" });
   } catch (error) {
@@ -94,7 +107,7 @@ exports.updateUtilisateur = async (req, res) => {
 exports.deleteUtilisateur = async (req, res) => {
   try {
     const deletedRows = await Utilisateur.destroy({
-      where: { ID: req.params.id }
+      where: { ID: req.params.id },
     });
     if (deletedRows === 0) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
