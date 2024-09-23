@@ -52,7 +52,8 @@ exports.getCategories = async (req, res) => {
 // Créer une nouvelle fiche
 exports.createFiche = async (req, res) => {
   try {
-    const nouvelleFiche = await Fiche.create(req.body);
+    const { Titre, Contenu, UtilisateurID, CategorieID } = req.body;
+    const nouvelleFiche = await Fiche.create({ Titre, Contenu, UtilisateurID, CategorieID });
     res.status(201).json(nouvelleFiche);
   } catch (error) {
     console.error("Erreur lors de la création de la fiche:", error);
@@ -63,7 +64,8 @@ exports.createFiche = async (req, res) => {
 // Mettre à jour une fiche
 exports.updateFiche = async (req, res) => {
   try {
-    const [updatedRows] = await Fiche.update(req.body, {
+    const { Titre, Contenu, UtilisateurID, CategorieID } = req.body;
+    const [updatedRows] = await Fiche.update({ Titre, Contenu, UtilisateurID, CategorieID }, {
       where: { ID: req.params.id }
     });
     if (updatedRows === 0) {
@@ -79,6 +81,7 @@ exports.updateFiche = async (req, res) => {
 // Supprimer une fiche
 exports.deleteFiche = async (req, res) => {
   try {
+    const { Titre, Contenu, UtilisateurID, CategorieID } = req.body;
     const deletedRows = await Fiche.destroy({
       where: { ID: req.params.id }
     });

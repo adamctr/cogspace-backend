@@ -2,23 +2,44 @@ const express = require("express");
 const router = express.Router();
 
 const ficheController = require("../controllers/ficheController");
+const ficheValidator = require("../validators/ficheValidator");
 
 // Route pour obtenir toutes les fiches
 router.get("/", ficheController.getAllfiches);
 
 // Route pour obtenir une fiche par son ID
-router.get("/:id", ficheController.getFicheById);
+router.get(
+  "/:id",
+  ficheValidator.getFicheByIdValidator,
+  ficheController.getFicheById
+);
 
 // Route pour obtenir les catégories d'une fiche
-router.get("/:id/category", ficheController.getCategories);
+router.get(
+  "/:id/category",
+  ficheValidator.getFicheByIdValidator,
+  ficheController.getCategories
+);
 
 // Route pour créer une nouvelle fiche
-router.post("/", ficheController.createFiche);
+router.post(
+  "/",
+  ficheValidator.createFicheValidator,
+  ficheController.createFiche
+);
 
 // Route pour mettre à jour une fiche
-router.put("/:id", ficheController.updateFiche);
+router.put(
+  "/:id",
+  ficheValidator.updateFicheValidator,
+  ficheController.updateFiche
+);
 
 // Route pour supprimer une fiche
-router.delete("/:id", ficheController.deleteFiche);
+router.delete(
+  "/:id",
+  ficheValidator.deleteFicheValidator,
+  ficheController.deleteFiche
+);
 
 module.exports = router;
