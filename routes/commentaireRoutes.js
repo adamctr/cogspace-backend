@@ -6,12 +6,12 @@ const CommentaireController = require("../controllers/commentaireController");
 router.post("/", CommentaireController.creerCommentaire);
 
 // Route pour récupérer tous les commentaires pour une fiche spécifique
-router.get("/:ficheID", CommentaireController.getCommentaires);
+router.get("/:FicheID", CommentaireController.getCommentaires);
 
 // Route pour mettre à jour un commentaire existant
-router.put("/:commentaireID", CommentaireController.mettreAJourCommentaire);
+router.put("/:ID", CommentaireController.mettreAJourCommentaire);
 
 // Route pour supprimer un commentaire
-router.delete("/:commentaireID", CommentaireController.supprimerCommentaire);
+router.delete("/:ID", CommentaireController.supprimerCommentaire);
 
 module.exports = router;
