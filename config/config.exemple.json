@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "",
+    "port": 80,
+    "database": "cogspace",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "",
+    "port": 80,
+    "database": "cogspace",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "",
+    "port": 80,
+    "database": "cogspace",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
