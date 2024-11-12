@@ -26,11 +26,13 @@ app.use(express.json());
 const ficheRoutes = require("./routes/ficheRoutes");
 const categorieRoutes = require("./routes/categorieRoutes");
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
+const commentaireRoutes = require("./routes/commentaireRoutes");
 
 // Routes
 app.use("/post", ficheRoutes); // Routes pour les fiches
 app.use("/category", categorieRoutes); // Routes pour les catégories
 app.use("/user", utilisateurRoutes); // Routes pour les utilisateurs
+app.use("/comment", commentaireRoutes); // Routes pour les utilisateurs
 
 // Gérer les erreurs 404
 app.use((req, res, next) => {
