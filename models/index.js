@@ -40,14 +40,12 @@ fs.readdirSync(__dirname)
   });
 
 Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
+  if ('associate' in db[modelName]) {
     db[modelName].associate(db);
   }
 });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
-// applyExtraSetup(sequelize);
 
 module.exports = db;

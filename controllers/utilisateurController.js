@@ -1,6 +1,5 @@
-const { sequelize, DataTypes } = require("../app");
-const Utilisateur = require("../models/Utilisateurs")(sequelize, DataTypes);
-const Fiche = require("../models/Fiche")(sequelize, DataTypes); // Relation entre Utilisateur et Fiche
+const { sequelize } = require("../models/index");
+const { Utilisateur, Fiche } = sequelize.models;
 const crypto = require("crypto");
 
 // Obtenir tous les utilisateurs

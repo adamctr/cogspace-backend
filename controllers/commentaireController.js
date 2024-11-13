@@ -1,7 +1,5 @@
-const { sequelize, DataTypes } = require("../app");
-const Commentaire = require("../models/Commentaires")(sequelize, DataTypes);
-const Fiche = require("../models/Fiche")(sequelize, DataTypes);
-const Utilisateur = require("../models/Utilisateurs")(sequelize, DataTypes);
+const { sequelize } = require("../models/index");
+const { Commentaire, Fiche, Utilisateur } = sequelize.models;
 
 class CommentaireController {
   // Créer un nouveau commentaire

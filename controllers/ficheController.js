@@ -1,6 +1,5 @@
-const { sequelize, DataTypes } = require("../app");
-const Fiche = require("../models/Fiche")(sequelize, DataTypes);
-const Categorie = require("../models/Categorie")(sequelize, DataTypes); // pour la relation entre Fiche et Categorie
+const { sequelize } = require("../models/index");
+const { Fiche, Categorie } = sequelize.models;
 
 // Obtenir toutes les fiches
 exports.getAllfiches = async (req, res) => {
@@ -36,7 +35,7 @@ exports.getCategories = async (req, res) => {
     const fiche = await Fiche.findByPk(req.params.id, {
       include: [{
         model: Categorie, // Assuming the association is already defined
-        as: "Categories" // Adjust this if needed
+        as: "Categorie" // Adjust this if needed
       }]
     });
     if (!fiche || !fiche.CategorieID) {

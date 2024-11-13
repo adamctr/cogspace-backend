@@ -1,9 +1,6 @@
 function applyExtraSetup(sequelize) {
-  // console.log("ApplyExtraSetup", sequelize.models);
-  const { Utilisateurs, Commentaires } = sequelize.models;
-
-  // console.log("Utilisateurs", typeof Utilisateurs);
-  // console.log("Commentaires", typeof Commentaires);
+  console.log("ApplyExtraSetup", sequelize.models);
+  const { Utilisateurs, Commentaires, Categorie, Fiche } = sequelize.models;
 
   Utilisateurs.hasMany(Commentaires, {
     foreignKey: "AuteurID",
@@ -11,6 +8,14 @@ function applyExtraSetup(sequelize) {
 
   Commentaires.belongsTo(Utilisateurs, {
     foreignKey: "AuteurID",
+  });
+
+  Categorie.hasMany(Fiche, {
+    foreignKey: "CategorieID",
+  });
+
+  Fiche.belongsTo(Categorie, {
+    foreignKey: "CategorieID",
   });
 }
 
