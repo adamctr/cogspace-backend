@@ -1,11 +1,12 @@
 const { sequelize } = require("../models/index");
-const { Utilisateur, Fiche } = sequelize.models;
+console.log(sequelize.models);
+const { Utilisateurs, Fiche } = sequelize.models;
 const crypto = require("crypto");
 
 // Obtenir tous les utilisateurs
 exports.getAllUtilisateurs = async (req, res) => {
   try {
-    const utilisateurs = await Utilisateur.findAll();
+    const utilisateurs = await Utilisateurs.findAll();
     if (!utilisateurs || utilisateurs.length === 0) {
       return res.status(404).json({ message: "Aucun utilisateur trouvé" });
     }
@@ -20,7 +21,7 @@ exports.getAllUtilisateurs = async (req, res) => {
 exports.getUtilisateurById = async (req, res) => {
   try {
     console.log(req.params.id);
-    const utilisateur = await Utilisateur.findByPk(req.params.id);
+    const utilisateur = await Utilisateurs.findByPk(req.params.id);
     if (!utilisateur) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
@@ -34,7 +35,7 @@ exports.getUtilisateurById = async (req, res) => {
 // Obtenir les fiches d'un utilisateur
 exports.getFiches = async (req, res) => {
   try {
-    const utilisateur = await Utilisateur.findByPk(req.params.id, {
+    const utilisateur = await Utilisateurs.findByPk(req.params.id, {
       include: [
         {
           model: Fiche, // Assuming the association is already defined
@@ -70,7 +71,7 @@ exports.createUtilisateur = async (req, res) => {
       .update(MotDePasse)
       .digest("hex");
 
-    const nouvelUtilisateur = await Utilisateur.create({
+    const nouvelUtilisateur = await Utilisateurs.create({
       Nom,
       Prenom,
       Email,
@@ -87,7 +88,7 @@ exports.createUtilisateur = async (req, res) => {
 // Mettre à jour un utilisateur
 exports.updateUtilisateur = async (req, res) => {
   try {
-    const [updatedRows] = await Utilisateur.update(req.body, {
+    const [updatedRows] = await Utilisateurs.update(req.body, {
       where: { ID: req.params.id },
     });
     if (updatedRows === 0) {
@@ -105,7 +106,7 @@ exports.updateUtilisateur = async (req, res) => {
 // Supprimer un utilisateur
 exports.deleteUtilisateur = async (req, res) => {
   try {
-    const deletedRows = await Utilisateur.destroy({
+    const deletedRows = await Utilisateurs.destroy({
       where: { ID: req.params.id },
     });
     if (deletedRows === 0) {
