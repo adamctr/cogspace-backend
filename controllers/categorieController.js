@@ -1,5 +1,5 @@
-const { sequelize, DataTypes, Op } = require("../app");
-const Categorie = require("../models/Categorie")(sequelize, DataTypes);
+const { sequelize } = require("../models/index");
+const { Categorie } = sequelize.models;
 
 // Obtenir toutes les catégories
 exports.getAllCategories = async (req, res) => {
@@ -70,7 +70,7 @@ exports.getFiches = async (req, res) => {
   try {
     // Relation entre Categorie et Fiche devrait être définie
     const fiches = await Categorie.findByPk(req.params.id, {
-      include: "Fiches", // Assuming "Fiches" is the association name
+      include: [Fiche], // Assuming "Fiches" is the association name
     });
     if (!fiches) {
       return res.status(404).json({ message: "Pas de fiches trouvées pour cette catégorie" });
