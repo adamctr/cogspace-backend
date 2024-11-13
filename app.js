@@ -28,6 +28,7 @@ const categorieRoutes = require("./routes/categorieRoutes");
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
 const commentaireRoutes = require("./routes/commentaireRoutes");
 const roleRoutes = require("./routes/roleRoutes");
+const rechercheRoutes = require("./routes/rechercheRoutes");
 
 // Routes
 app.use("/post", ficheRoutes); // Routes pour les fiches
@@ -35,6 +36,7 @@ app.use("/category", categorieRoutes); // Routes pour les catégories
 app.use("/user", utilisateurRoutes); // Routes pour les utilisateurs
 app.use("/comment", commentaireRoutes); // Routes pour les utilisateurs
 app.use("/role", roleRoutes); // Routes pour les rôles
+app.use("/search", rechercheRoutes); // Routes pour les recherches
 
 // Gérer les erreurs 404
 app.use((req, res, next) => {
