@@ -41,7 +41,7 @@ class CommentaireController {
       // Récupérer les commentaires
       const commentaires = await Commentaires.findAll({
         where: { FicheID: FicheID },
-        include: [{ model: Utilisateur, attributes: ["nom"] }],
+        include: [{ model: Utilisateurs, as: "Auteur", attributes: ["nom"] }],
         order: [["DatePublication", "ASC"]],
       });
 
