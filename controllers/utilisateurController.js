@@ -1,5 +1,4 @@
 const { sequelize } = require("../models/index");
-console.log(sequelize.models);
 const { Utilisateurs, Fiche } = sequelize.models;
 const crypto = require("crypto");
 
@@ -38,8 +37,8 @@ exports.getFiches = async (req, res) => {
     const utilisateur = await Utilisateurs.findByPk(req.params.id, {
       include: [
         {
-          model: Fiche, // Assuming the association is already defined
-          as: "Fiches", // Adjust if needed
+          model: Fiche,
+          as: "fiches",
         },
       ],
     });
@@ -48,7 +47,7 @@ exports.getFiches = async (req, res) => {
         .status(404)
         .json({ message: "Utilisateur ou fiches non trouvés" });
     }
-    res.status(200).json(utilisateur.Fiches);
+    res.status(200).json(utilisateur.fiches);
   } catch (error) {
     console.error(
       "Erreur lors de la récupération des fiches de l'utilisateur:",
