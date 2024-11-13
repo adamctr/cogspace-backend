@@ -11,6 +11,7 @@ var _Role_Permission = require("./Role_Permission");
 var _Role_Utilisateur = require("./Role_Utilisateur");
 var _Utilisateur_Fiche_Notes = require("./Utilisateur_Fiche_Notes");
 var _Utilisateurs = require("./Utilisateurs");
+var _User_Fiche_Favoris = require("./User_Fiche_Favoris");
 
 function initModels(sequelize) {
   var Categorie = _Categorie(sequelize, DataTypes);
@@ -25,46 +26,132 @@ function initModels(sequelize) {
   var Role_Utilisateur = _Role_Utilisateur(sequelize, DataTypes);
   var Utilisateur_Fiche_Notes = _Utilisateur_Fiche_Notes(sequelize, DataTypes);
   var Utilisateurs = _Utilisateurs(sequelize, DataTypes);
+  var User_Fiche_Favoris = _User_Fiche_Favoris(sequelize, DataTypes);
 
-  Permission.belongsToMany(Role, { as: 'RoleID_Roles', through: Role_Permission, foreignKey: "PermissionID", otherKey: "RoleID" });
-  Role.belongsToMany(Permission, { as: 'PermissionID_Permissions', through: Role_Permission, foreignKey: "RoleID", otherKey: "PermissionID" });
-  Role.belongsToMany(Utilisateurs, { as: 'UtilisateurID_Utilisateurs', through: Role_Utilisateur, foreignKey: "RoleID", otherKey: "UtilisateurID" });
-  Utilisateurs.belongsToMany(Role, { as: 'RoleID_Role_role_utilisateurs', through: Role_Utilisateur, foreignKey: "UtilisateurID", otherKey: "RoleID" });
-  Categorie.belongsTo(Categorie, { as: "CategorieParent", foreignKey: "CategorieParentID"});
-  Categorie.hasMany(Categorie, { as: "categories", foreignKey: "CategorieParentID"});
-  Categorie_Fiche.belongsTo(Categorie, { as: "Categorie", foreignKey: "CategorieID"});
-  Categorie.hasMany(Categorie_Fiche, { as: "categorie_fiches", foreignKey: "CategorieID"});
-  Fiche.belongsTo(Categorie, { as: "Categorie", foreignKey: "CategorieID"});
-  Categorie.hasMany(Fiche, { as: "fiches", foreignKey: "CategorieID"});
-  Categorie_Fiche.belongsTo(Fiche, { as: "Fiche", foreignKey: "FicheID"});
-  Fiche.hasMany(Categorie_Fiche, { as: "categorie_fiches", foreignKey: "FicheID"});
-  Commentaires.belongsTo(Fiche, { as: "Fiche", foreignKey: "FicheID"});
-  Fiche.hasMany(Commentaires, { as: "commentaires", foreignKey: "FicheID"});
-  Lien_Fiche.belongsTo(Fiche, { as: "Source", foreignKey: "SourceID"});
-  Fiche.hasMany(Lien_Fiche, { as: "lien_fiches", foreignKey: "SourceID"});
-  Lien_Fiche.belongsTo(Fiche, { as: "Cible", foreignKey: "CibleID"});
-  Fiche.hasMany(Lien_Fiche, { as: "Cible_lien_fiches", foreignKey: "CibleID"});
-  Liens.belongsTo(Fiche, { as: "Source", foreignKey: "SourceID"});
-  Fiche.hasMany(Liens, { as: "liens", foreignKey: "SourceID"});
-  Liens.belongsTo(Fiche, { as: "Cible", foreignKey: "CibleID"});
-  Fiche.hasMany(Liens, { as: "Cible_liens", foreignKey: "CibleID"});
-  Utilisateur_Fiche_Notes.belongsTo(Fiche, { as: "Fiche", foreignKey: "FicheID"});
-  Fiche.hasMany(Utilisateur_Fiche_Notes, { as: "utilisateur_fiche_notes", foreignKey: "FicheID"});
-  Role_Permission.belongsTo(Permission, { as: "Permission", foreignKey: "PermissionID"});
-  Permission.hasMany(Role_Permission, { as: "role_permissions", foreignKey: "PermissionID"});
-  Role_Permission.belongsTo(Role, { as: "Role", foreignKey: "RoleID"});
-  Role.hasMany(Role_Permission, { as: "role_permissions", foreignKey: "RoleID"});
-  Role_Utilisateur.belongsTo(Role, { as: "Role", foreignKey: "RoleID"});
-  Role.hasMany(Role_Utilisateur, { as: "role_utilisateurs", foreignKey: "RoleID"});
-  Commentaires.belongsTo(Utilisateurs, { as: "Auteur", foreignKey: "AuteurID"});
-  Utilisateurs.hasMany(Commentaires, { as: "commentaires", foreignKey: "AuteurID"});
-  Fiche.belongsTo(Utilisateurs, { as: "Utilisateur", foreignKey: "UtilisateurID"});
-  Utilisateurs.hasMany(Fiche, { as: "fiches", foreignKey: "UtilisateurID"});
-  Role_Utilisateur.belongsTo(Utilisateurs, { as: "Utilisateur", foreignKey: "UtilisateurID"});
-  Utilisateurs.hasMany(Role_Utilisateur, { as: "role_utilisateurs", foreignKey: "UtilisateurID"});
-  Utilisateur_Fiche_Notes.belongsTo(Utilisateurs, { as: "Utilisateur", foreignKey: "UtilisateurID"});
-  Utilisateurs.hasMany(Utilisateur_Fiche_Notes, { as: "utilisateur_fiche_notes", foreignKey: "UtilisateurID"});
-
+  Permission.belongsToMany(Role, {
+    as: "RoleID_Roles",
+    through: Role_Permission,
+    foreignKey: "PermissionID",
+    otherKey: "RoleID",
+  });
+  Role.belongsToMany(Permission, {
+    as: "PermissionID_Permissions",
+    through: Role_Permission,
+    foreignKey: "RoleID",
+    otherKey: "PermissionID",
+  });
+  Role.belongsToMany(Utilisateurs, {
+    as: "UtilisateurID_Utilisateurs",
+    through: Role_Utilisateur,
+    foreignKey: "RoleID",
+    otherKey: "UtilisateurID",
+  });
+  Utilisateurs.belongsToMany(Role, {
+    as: "RoleID_Role_role_utilisateurs",
+    through: Role_Utilisateur,
+    foreignKey: "UtilisateurID",
+    otherKey: "RoleID",
+  });
+  Categorie.belongsTo(Categorie, {
+    as: "CategorieParent",
+    foreignKey: "CategorieParentID",
+  });
+  Categorie.hasMany(Categorie, {
+    as: "categories",
+    foreignKey: "CategorieParentID",
+  });
+  Categorie_Fiche.belongsTo(Categorie, {
+    as: "Categorie",
+    foreignKey: "CategorieID",
+  });
+  Categorie.hasMany(Categorie_Fiche, {
+    as: "categorie_fiches",
+    foreignKey: "CategorieID",
+  });
+  Fiche.belongsTo(Categorie, { as: "Categorie", foreignKey: "CategorieID" });
+  Categorie.hasMany(Fiche, { as: "fiches", foreignKey: "CategorieID" });
+  Categorie_Fiche.belongsTo(Fiche, { as: "Fiche", foreignKey: "FicheID" });
+  Fiche.hasMany(Categorie_Fiche, {
+    as: "categorie_fiches",
+    foreignKey: "FicheID",
+  });
+  Commentaires.belongsTo(Fiche, { as: "Fiche", foreignKey: "FicheID" });
+  Fiche.hasMany(Commentaires, { as: "commentaires", foreignKey: "FicheID" });
+  Lien_Fiche.belongsTo(Fiche, { as: "Source", foreignKey: "SourceID" });
+  Fiche.hasMany(Lien_Fiche, { as: "lien_fiches", foreignKey: "SourceID" });
+  Lien_Fiche.belongsTo(Fiche, { as: "Cible", foreignKey: "CibleID" });
+  Fiche.hasMany(Lien_Fiche, { as: "Cible_lien_fiches", foreignKey: "CibleID" });
+  Liens.belongsTo(Fiche, { as: "Source", foreignKey: "SourceID" });
+  Fiche.hasMany(Liens, { as: "liens", foreignKey: "SourceID" });
+  Liens.belongsTo(Fiche, { as: "Cible", foreignKey: "CibleID" });
+  Fiche.hasMany(Liens, { as: "Cible_liens", foreignKey: "CibleID" });
+  Utilisateur_Fiche_Notes.belongsTo(Fiche, {
+    as: "Fiche",
+    foreignKey: "FicheID",
+  });
+  Fiche.hasMany(Utilisateur_Fiche_Notes, {
+    as: "utilisateur_fiche_notes",
+    foreignKey: "FicheID",
+  });
+  Role_Permission.belongsTo(Permission, {
+    as: "Permission",
+    foreignKey: "PermissionID",
+  });
+  Permission.hasMany(Role_Permission, {
+    as: "role_permissions",
+    foreignKey: "PermissionID",
+  });
+  Role_Permission.belongsTo(Role, { as: "Role", foreignKey: "RoleID" });
+  Role.hasMany(Role_Permission, {
+    as: "role_permissions",
+    foreignKey: "RoleID",
+  });
+  Role_Utilisateur.belongsTo(Role, { as: "Role", foreignKey: "RoleID" });
+  Role.hasMany(Role_Utilisateur, {
+    as: "role_utilisateurs",
+    foreignKey: "RoleID",
+  });
+  Commentaires.belongsTo(Utilisateurs, {
+    as: "Auteur",
+    foreignKey: "AuteurID",
+  });
+  Utilisateurs.hasMany(Commentaires, {
+    as: "commentaires",
+    foreignKey: "AuteurID",
+  });
+  Fiche.belongsTo(Utilisateurs, {
+    as: "Utilisateur",
+    foreignKey: "UtilisateurID",
+  });
+  Utilisateurs.hasMany(Fiche, { as: "fiches", foreignKey: "UtilisateurID" });
+  Role_Utilisateur.belongsTo(Utilisateurs, {
+    as: "Utilisateur",
+    foreignKey: "UtilisateurID",
+  });
+  Utilisateurs.hasMany(Role_Utilisateur, {
+    as: "role_utilisateurs",
+    foreignKey: "UtilisateurID",
+  });
+  Utilisateur_Fiche_Notes.belongsTo(Utilisateurs, {
+    as: "Utilisateur",
+    foreignKey: "UtilisateurID",
+  });
+  Utilisateurs.hasMany(Utilisateur_Fiche_Notes, {
+    as: "utilisateur_fiche_notes",
+    foreignKey: "UtilisateurID",
+  });
+  Utilisateurs.belongsToMany(Fiche, {
+    as: "Favoris",
+    through: User_Fiche_Favoris,
+    foreignKey: "UtilisateurID",
+    otherKey: "FicheID",
+  });
+  Fiche.belongsToMany(Utilisateurs, {
+    as: "Favoris",
+    through: User_Fiche_Favoris,
+    foreignKey: "FicheID",
+    otherKey: "UtilisateurID",
+  });
   return {
     Categorie,
     Categorie_Fiche,
@@ -78,6 +165,7 @@ function initModels(sequelize) {
     Role_Utilisateur,
     Utilisateur_Fiche_Notes,
     Utilisateurs,
+    User_Fiche_Favoris,
   };
 }
 module.exports = initModels;
