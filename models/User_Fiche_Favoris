@@ -1,0 +1,31 @@
+const { DataTypes } = require("sequelize");
+
+module.exports = (sequelize) => {
+  const User_Fiche_Favoris = sequelize.define(
+    "User_Fiche_Favoris",
+    {
+      UtilisateurID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        references: {
+          model: "Utilisateurs",
+          key: "id",
+        },
+      },
+      FicheID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        references: {
+          model: "Fiche",
+          key: "id",
+        },
+      },
+    },
+    {
+      tableName: "User_Fiche_Favoris",
+      timestamps: false,
+    }
+  );
+
+  return User_Fiche_Favoris;
+};

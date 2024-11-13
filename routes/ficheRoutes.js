@@ -42,4 +42,16 @@ router.delete(
   ficheController.deleteFiche
 );
 
+// Route pour noter une fiche
+router.post(
+  "/:id/note",
+  ficheController.noterFiche
+);
+
+// Route pour récupérer la moyenne des notes d'une fiche
+router.get(
+  "/:id/note",
+  ficheController.getMoyenneNotes
+);
+
 module.exports = router;

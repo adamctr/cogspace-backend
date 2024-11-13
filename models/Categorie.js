@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define(
+  const Categorie = sequelize.define(
     "Categorie",
     {
       ID: {
@@ -44,4 +44,6 @@ module.exports = function (sequelize, DataTypes) {
       ],
     }
   );
+
+  return Categorie;
 };

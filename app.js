@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
-const { Sequelize, DataTypes, Op } = require("sequelize");
-
 const db = require("./models");
-const config = require("./config/config.json");
 const PORT = process.env.PORT || 3000;
+const { Sequelize, DataTypes, Op } = require("sequelize");
+const config = require("./config/config.json");
 
 // Initialisation de Sequelize
 const sequelize = new Sequelize(
@@ -27,19 +26,25 @@ const ficheRoutes = require("./routes/ficheRoutes");
 const categorieRoutes = require("./routes/categorieRoutes");
 const utilisateurRoutes = require("./routes/utilisateurRoutes");
 const commentaireRoutes = require("./routes/commentaireRoutes");
+const utilisateurFichesFavoritesRoutes = require("./routes/utilisateurFichesFavoritesRoutes");
+const roleRoutes = require("./routes/roleRoutes");
+const rechercheRoutes = require("./routes/rechercheRoutes");
 
 // Routes
 app.use("/post", ficheRoutes); // Routes pour les fiches
 app.use("/category", categorieRoutes); // Routes pour les catégories
 app.use("/user", utilisateurRoutes); // Routes pour les utilisateurs
-app.use("/comment", commentaireRoutes); // Routes pour les utilisateurs
+app.use("/comment", commentaireRoutes); // Routes pour les commentaires
+app.use("/userfavoriteposts", utilisateurFichesFavoritesRoutes); // Routes pour les commentaires
+app.use("/role", roleRoutes); // Routes pour les rôles
+app.use("/search", rechercheRoutes); // Routes pour les recherches
 
 // Gérer les erreurs 404
 app.use((req, res, next) => {
   res.status(404).json({ message: "Ressource non trouvée" });
 });
 
-sequelize
+db.sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");

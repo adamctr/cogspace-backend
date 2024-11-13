@@ -1,6 +1,5 @@
-const { sequelize, DataTypes } = require("../app");
-const Fiche = require("../models/Fiche")(sequelize, DataTypes);
-const Categorie = require("../models/Categorie")(sequelize, DataTypes); // pour la relation entre Fiche et Categorie
+const { sequelize } = require("../models/index");
+const { Fiche, Categorie, Utilisateurs, Utilisateur_Fiche_Notes } = sequelize.models;
 
 // Obtenir toutes les fiches
 exports.getAllfiches = async (req, res) => {
@@ -34,13 +33,17 @@ exports.getFicheById = async (req, res) => {
 exports.getCategories = async (req, res) => {
   try {
     const fiche = await Fiche.findByPk(req.params.id, {
-      include: [{
-        model: Categorie, // Assuming the association is already defined
-        as: "Categories" // Adjust this if needed
-      }]
+      include: [
+        {
+          model: Categorie, // Assuming the association is already defined
+          as: "Categorie", // Adjust this if needed
+        },
+      ],
     });
     if (!fiche || !fiche.CategorieID) {
-      return res.status(404).json({ message: "Catégorie non trouvée pour cette fiche" });
+      return res
+        .status(404)
+        .json({ message: "Catégorie non trouvée pour cette fiche" });
     }
     res.status(200).json(fiche);
   } catch (error) {
@@ -53,7 +56,12 @@ exports.getCategories = async (req, res) => {
 exports.createFiche = async (req, res) => {
   try {
     const { Titre, Contenu, UtilisateurID, CategorieID } = req.body;
-    const nouvelleFiche = await Fiche.create({ Titre, Contenu, UtilisateurID, CategorieID });
+    const nouvelleFiche = await Fiche.create({
+      Titre,
+      Contenu,
+      UtilisateurID,
+      CategorieID,
+    });
     res.status(201).json(nouvelleFiche);
   } catch (error) {
     console.error("Erreur lors de la création de la fiche:", error);
@@ -65,11 +73,16 @@ exports.createFiche = async (req, res) => {
 exports.updateFiche = async (req, res) => {
   try {
     const { Titre, Contenu, UtilisateurID, CategorieID } = req.body;
-    const [updatedRows] = await Fiche.update({ Titre, Contenu, UtilisateurID, CategorieID }, {
-      where: { ID: req.params.id }
-    });
+    const [updatedRows] = await Fiche.update(
+      { Titre, Contenu, UtilisateurID, CategorieID },
+      {
+        where: { ID: req.params.id },
+      }
+    );
     if (updatedRows === 0) {
-      return res.status(404).json({ message: "Fiche non trouvée ou pas de mise à jour" });
+      return res
+        .status(404)
+        .json({ message: "Fiche non trouvée ou pas de mise à jour" });
     }
     res.status(200).json({ message: "Fiche mise à jour avec succès" });
   } catch (error) {
@@ -83,7 +96,7 @@ exports.deleteFiche = async (req, res) => {
   try {
     const { Titre, Contenu, UtilisateurID, CategorieID } = req.body;
     const deletedRows = await Fiche.destroy({
-      where: { ID: req.params.id }
+      where: { ID: req.params.id },
     });
     if (deletedRows === 0) {
       return res.status(404).json({ message: "Fiche non trouvée" });
@@ -91,6 +104,89 @@ exports.deleteFiche = async (req, res) => {
     res.status(200).json({ message: "Fiche supprimée avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression de la fiche:", error);
+    res.status(500).json({ message: "Erreur serveur interne" });
+  }
+};
+
+// Noter une fiche
+exports.noterFiche = async (req, res) => {
+  try {
+    const { UtilisateurID, Note } = req.body;
+    const { id: FicheID } = req.params;
+
+    // Vérifier si la fiche existe
+    const fiche = await Fiche.findByPk(FicheID);
+    if (!fiche) {
+      return res.status(404).json({ message: "Fiche non trouvée" });
+    }
+
+    // Vérifier si l'utilisateur existe
+    const utilisateur = await Utilisateurs.findByPk(UtilisateurID);
+    if (!utilisateur) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Vérifier si l'utilisateur a déjà noté la fiche
+    const noteExistante = await Utilisateur_Fiche_Notes.findOne({
+      where: { UtilisateurID, FicheID },
+    });
+    if (noteExistante) {
+      return res
+        .status(400)
+        .json({ message: "Vous avez déjà noté cette fiche" });
+    }
+
+    // Vérifier si la note est valide
+    if (Note < 1 || Note > 5) {
+      return res
+        .status(400)
+        .json({ message: "La note doit être comprise entre 1 et 5" });
+    }
+
+    // Créer ou mettre à jour la note
+    const [note, created] = await Utilisateur_Fiche_Notes.upsert({
+      UtilisateurID,
+      FicheID,
+      Note,
+    });
+
+    // Mettre à jour la note moyenne de la fiche
+    const notes = await Utilisateur_Fiche_Notes.findAll({ where: { FicheID } });
+    const noteMoyenne =
+      notes.reduce((acc, curr) => acc + curr.Note, 0) / notes.length;
+    fiche.FicheNoteMoyenne = noteMoyenne;
+    await fiche.save();
+
+    res.status(200).json({ message: "Note ajoutée avec succès", note });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de la note:", error);
+    res.status(500).json({ message: "Erreur serveur interne" });
+  }
+};
+
+// Calculer et retourner la note moyenne d'une fiche
+exports.getMoyenneNotes = async (req, res) => {
+  try {
+    const { id: FicheID } = req.params;
+
+    // Vérifier si la fiche existe
+    const fiche = await Fiche.findByPk(FicheID);
+    if (!fiche) {
+      return res.status(404).json({ message: "Fiche non trouvée" });
+    }
+
+    // Récupérer toutes les notes de la fiche
+    const notes = await Utilisateur_Fiche_Notes.findAll({ where: { FicheID } });
+    if (notes.length === 0) {
+      return res.status(404).json({ message: "Aucune note trouvée pour cette fiche" });
+    }
+
+    // Calculer la moyenne des notes
+    const noteMoyenne = notes.reduce((acc, curr) => acc + curr.Note, 0) / notes.length;
+
+    res.status(200).json({ noteMoyenne });
+  } catch (error) {
+    console.error("Erreur lors du calcul de la note moyenne:", error);
     res.status(500).json({ message: "Erreur serveur interne" });
   }
 };

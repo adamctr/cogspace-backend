@@ -1,7 +1,5 @@
-const { sequelize, DataTypes } = require("../app");
-const Commentaire = require("../models/Commentaires")(sequelize, DataTypes);
-const Fiche = require("../models/Fiche")(sequelize, DataTypes);
-const Utilisateur = require("../models/Utilisateurs")(sequelize, DataTypes);
+const { sequelize } = require("../models/index");
+const { Commentaires, Fiche, Utilisateurs } = sequelize.models;
 
 class CommentaireController {
   // Créer un nouveau commentaire
@@ -16,7 +14,7 @@ class CommentaireController {
       }
 
       // Créer le commentaire
-      const commentaire = await Commentaire.create({
+      const commentaire = await Commentaires.create({
         Contenu: Contenu,
         FicheID: FicheID,
         AuteurID: UtilisateurID,
@@ -34,7 +32,6 @@ class CommentaireController {
   static async getCommentaires(req, res) {
     try {
       const { FicheID } = req.params;
-
       // Vérifier si la fiche existe
       const fiche = await Fiche.findByPk(FicheID);
       if (!fiche) {
@@ -42,9 +39,9 @@ class CommentaireController {
       }
 
       // Récupérer les commentaires
-      const commentaires = await Commentaire.findAll({
+      const commentaires = await Commentaires.findAll({
         where: { FicheID: FicheID },
-        include: [{ model: Utilisateur, attributes: ["nom"] }],
+        include: [{ model: Utilisateurs, as: "Auteur", attributes: ["nom"] }],
         order: [["DatePublication", "ASC"]],
       });
 
@@ -64,7 +61,7 @@ class CommentaireController {
       const { Contenu } = req.body;
 
       // Vérifier si le commentaire existe
-      const commentaire = await Commentaire.findByPk(ID);
+      const commentaire = await Commentaires.findByPk(ID);
       if (!commentaire) {
         return res.status(404).json({ message: "Commentaire non trouvé" });
       }
@@ -88,7 +85,7 @@ class CommentaireController {
       const { ID } = req.params;
 
       // Vérifier si le commentaire existe
-      const commentaire = await Commentaire.findByPk(ID);
+      const commentaire = await Commentaires.findByPk(ID);
       if (!commentaire) {
         return res.status(404).json({ message: "Commentaire non trouvé" });
       }
