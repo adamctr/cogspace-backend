@@ -12,6 +12,9 @@ router.get('/:id', RoleController.getRoleById);
 // Route pour obtenir les rôles d'un utilisateur spécifique
 router.get('/user/:id', RoleController.getRolesByUtilisateur);
 
+// Route pour ajouter un rôle à un utilisateur
+router.post('/user/', RoleController.addRoleToUtilisateur);
+
 // Route pour créer un nouveau rôle
 router.post('/', RoleController.createRole);
 

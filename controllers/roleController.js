@@ -1,5 +1,5 @@
 const { sequelize } = require("../models/index");
-const { Role } = sequelize.models;
+const { Role, Role_Utilisateur } = sequelize.models;
 
 // Obtenir tous les rôles
 
@@ -34,21 +34,39 @@ exports.getRoleById = async (req, res) => {
 // Obtenir les rôles d'un utilisateur
 
 exports.getRolesByUtilisateur = async (req, res) => {
-  try {
-    const roles = await Role.findAll({
-      where: {
-        UtilisateurID: req.params.id,
-      },
-    });
-    if (!roles || roles.length === 0) {
-      return res.status(404).json({ message: "Aucun rôle trouvé" });
+    try {
+        const roles = await Role_Utilisateur.findAll({
+            where: {
+                UtilisateurID: req.params.id,
+            },
+            include: [{
+                model: Role,
+                attributes: ['ID', 'Nom'],
+                as: "Role"
+            }]
+        });
+        if (!roles || roles.length === 0) {
+            return res.status(404).json({ message: "Aucun rôle trouvé pour cet utilisateur" });
+        }
+        res.status(200).json(roles);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des rôles:", error);
+        res.status(500).json({ message: "Erreur serveur interne" });
     }
-    res.status(200).json(roles);
-  } catch (error) {
-    console.error("Erreur lors de la récupération des rôles:", error);
-    res.status(500).json({ message: "Erreur serveur interne" });
-  }
 };
+
+// Ajouter un rôle à un utilisateur
+
+exports.addRoleToUtilisateur = async (req, res) => {
+    try {
+        const { UtilisateurID, RoleID } = req.body;
+        const role = await Role_Utilisateur.create({ UtilisateurID, RoleID });
+        res.status(201).json(role);
+    } catch (error) {
+        console.error("Erreur lors de l'ajout du rôle à l'utilisateur:", error);
+        res.status(500).json({ message: "Erreur serveur interne" });
+    }
+}
 
 // Créer un rôle
 
