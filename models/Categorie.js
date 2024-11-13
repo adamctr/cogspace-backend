@@ -45,13 +45,5 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
-  Categorie.associate = (models) => {
-    console.log("Categorie associations 1:", Categorie.associations);
-    Categorie.hasMany(models.Fiche, {
-      foreignKey: "CategorieID",
-    });
-    console.log("Categorie associations 2:", Categorie.associations);
-  };
-
   return Categorie;
 };

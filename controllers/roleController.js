@@ -1,5 +1,5 @@
-const { sequelize, DataTypes, Op } = require("../app");
-const Role = require("../models/Role")(sequelize, DataTypes);
+const { sequelize } = require("../models/index");
+const { Role } = sequelize.models;
 
 // Obtenir tous les rôles
 
