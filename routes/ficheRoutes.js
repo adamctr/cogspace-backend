@@ -42,4 +42,10 @@ router.delete(
   ficheController.deleteFiche
 );
 
+// Route pour noter une fiche
+router.post(
+  "/:id/note",
+  ficheController.noterFiche
+);
+
 module.exports = router;
