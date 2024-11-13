@@ -126,6 +126,16 @@ exports.noterFiche = async (req, res) => {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
+    // Vérifier si l'utilisateur a déjà noté la fiche
+    const noteExistante = await Utilisateur_Fiche_Notes.findOne({
+      where: { UtilisateurID, FicheID },
+    });
+    if (noteExistante) {
+      return res
+        .status(400)
+        .json({ message: "Vous avez déjà noté cette fiche" });
+    }
+
     // Vérifier si la note est valide
     if (Note < 1 || Note > 5) {
       return res
@@ -150,6 +160,33 @@ exports.noterFiche = async (req, res) => {
     res.status(200).json({ message: "Note ajoutée avec succès", note });
   } catch (error) {
     console.error("Erreur lors de l'ajout de la note:", error);
+    res.status(500).json({ message: "Erreur serveur interne" });
+  }
+};
+
+// Calculer et retourner la note moyenne d'une fiche
+exports.getMoyenneNotes = async (req, res) => {
+  try {
+    const { id: FicheID } = req.params;
+
+    // Vérifier si la fiche existe
+    const fiche = await Fiche.findByPk(FicheID);
+    if (!fiche) {
+      return res.status(404).json({ message: "Fiche non trouvée" });
+    }
+
+    // Récupérer toutes les notes de la fiche
+    const notes = await Utilisateur_Fiche_Notes.findAll({ where: { FicheID } });
+    if (notes.length === 0) {
+      return res.status(404).json({ message: "Aucune note trouvée pour cette fiche" });
+    }
+
+    // Calculer la moyenne des notes
+    const noteMoyenne = notes.reduce((acc, curr) => acc + curr.Note, 0) / notes.length;
+
+    res.status(200).json({ noteMoyenne });
+  } catch (error) {
+    console.error("Erreur lors du calcul de la note moyenne:", error);
     res.status(500).json({ message: "Erreur serveur interne" });
   }
 };
