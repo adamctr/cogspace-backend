@@ -75,10 +75,5 @@ module.exports = function(sequelize, DataTypes) {
     ]
   });
 
-  Fiche.associate = models => {
-    Fiche.belongsTo(models.Utilisateurs, { foreignKey: "UtilisateurID" });
-    Fiche.belongsTo(models.Categorie, { foreignKey: "CategorieID" });
-  };
-
   return Fiche;
 };

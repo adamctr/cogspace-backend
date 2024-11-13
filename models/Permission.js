@@ -1,6 +1,5 @@
-const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('Permission', {
+  const Permission = sequelize.define('Permission', {
     ID: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -39,4 +38,6 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
+
+  return Permission;
 };
