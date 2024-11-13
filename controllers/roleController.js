@@ -9,7 +9,7 @@ exports.getAllRoles = async (req, res) => {
     if (!roles || roles.length === 0) {
       return res.status(404).json({ message: "Aucun rôle trouvé" });
     }
-    res.status(200).json(roles);
+    res.status(200).json({ message: "Rôles récupérés avec succès", roles });
   } catch (error) {
     console.error("Erreur lors de la récupération des rôles:", error);
     res.status(500).json({ message: "Erreur serveur interne" });
@@ -24,7 +24,7 @@ exports.getRoleById = async (req, res) => {
     if (!role) {
       return res.status(404).json({ message: "Rôle non trouvé" });
     }
-    res.status(200).json(role);
+    res.status(200).json({ message: "Rôle récupéré avec succès", role });
   } catch (error) {
     console.error("Erreur lors de la récupération du rôle:", error);
     res.status(500).json({ message: "Erreur serveur interne" });
@@ -48,7 +48,7 @@ exports.getRolesByUtilisateur = async (req, res) => {
         if (!roles || roles.length === 0) {
             return res.status(404).json({ message: "Aucun rôle trouvé pour cet utilisateur" });
         }
-        res.status(200).json(roles);
+        res.status(200).json({ message: "Rôles de l'utilisateur récupérés avec succès", roles });
     } catch (error) {
         console.error("Erreur lors de la récupération des rôles:", error);
         res.status(500).json({ message: "Erreur serveur interne" });
@@ -61,7 +61,7 @@ exports.addRoleToUtilisateur = async (req, res) => {
     try {
         const { UtilisateurID, RoleID } = req.body;
         const role = await Role_Utilisateur.create({ UtilisateurID, RoleID });
-        res.status(201).json(role);
+        res.status(201).json({ message: "Rôle ajouté à l'utilisateur avec succès", role });
     } catch (error) {
         console.error("Erreur lors de l'ajout du rôle à l'utilisateur:", error);
         res.status(500).json({ message: "Erreur serveur interne" });
@@ -73,7 +73,7 @@ exports.addRoleToUtilisateur = async (req, res) => {
 exports.createRole = async (req, res) => {
   try {
     const role = await Role.create(req.body);
-    res.status(201).json(role);
+    res.status(201).json({ message: "Rôle créé avec succès", role });
   } catch (error) {
     console.error("Erreur lors de la création du rôle:", error);
     res.status(500).json({ message: "Erreur serveur interne" });
@@ -91,7 +91,7 @@ exports.updateRole = async (req, res) => {
     });
     if (updated) {
       const updatedRole = await Role.findByPk(req.params.id);
-      return res.status(200).json(updatedRole);
+      return res.status(200).json({ message: "Rôle mis à jour avec succès", updatedRole });
     }
     throw new Error("Rôle non trouvé");
   } catch (error) {
@@ -110,7 +110,7 @@ exports.deleteRole = async (req, res) => {
       },
     });
     if (deleted) {
-      return res.status(204).send();
+      return res.status(200).json({ message: "Rôle supprimé avec succès" });
     }
     throw new Error("Rôle non trouvé");
   } catch (error) {
