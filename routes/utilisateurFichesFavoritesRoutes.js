@@ -10,6 +10,6 @@ router.post("/", UtilisateurFicheFavorisController.addFavorite);
 router.delete("/", UtilisateurFicheFavorisController.removeFavorite);
 
 // Route pour lister les fiches favorites d'un utilisateur
-router.get("/:utilisateurId", UtilisateurFicheFavorisController.listFavorites);
+router.get("/:UtilisateurID", UtilisateurFicheFavorisController.listFavorites);
 
 module.exports = router;
