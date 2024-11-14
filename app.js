@@ -4,6 +4,7 @@ const db = require("./models");
 const PORT = process.env.PORT || 3000;
 const { Sequelize, DataTypes, Op } = require("sequelize");
 const config = require("./config/config.json");
+const cors = require("cors");
 
 // Initialisation de Sequelize
 const sequelize = new Sequelize(
