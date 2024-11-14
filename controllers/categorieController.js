@@ -4,7 +4,7 @@ const { Categorie } = sequelize.models;
 // Obtenir toutes les catégories
 exports.getAllCategories = async (req, res) => {
   try {
-    const categories = await Categorie.findAll({ limit: 10 });
+    const categories = await Categorie.findAll();
     if (!categories || categories.length === 0) {
       return res.status(404).json({ message: "Aucune catégorie trouvée" });
     }
@@ -34,15 +34,20 @@ exports.getEnfants = async (req, res) => {
   try {
     const enfants = await Categorie.findAll({
       where: {
-        CategorieParentID: req.params.id 
+        CategorieParentID: req.params.id,
       },
     });
     if (!enfants || enfants.length === 0) {
-      return res.status(404).json({ message: "Pas de catégories enfants trouvées" });
+      return res
+        .status(404)
+        .json({ message: "Pas de catégories enfants trouvées" });
     }
     res.status(200).json(enfants);
   } catch (error) {
-    console.error("Erreur lors de la récupération des catégories enfants:", error);
+    console.error(
+      "Erreur lors de la récupération des catégories enfants:",
+      error
+    );
     res.status(500).json({ message: "Erreur serveur interne" });
   }
 };
@@ -52,7 +57,9 @@ exports.getParent = async (req, res) => {
   try {
     const categorie = await Categorie.findByPk(req.params.id);
     if (!categorie || !categorie.CategorieParentID) {
-      return res.status(404).json({ message: "Catégorie ou parent non trouvé" });
+      return res
+        .status(404)
+        .json({ message: "Catégorie ou parent non trouvé" });
     }
     const parent = await Categorie.findByPk(categorie.CategorieParentID);
     if (!parent) {
@@ -73,7 +80,9 @@ exports.getFiches = async (req, res) => {
       include: [Fiche], // Assuming "Fiches" is the association name
     });
     if (!fiches) {
-      return res.status(404).json({ message: "Pas de fiches trouvées pour cette catégorie" });
+      return res
+        .status(404)
+        .json({ message: "Pas de fiches trouvées pour cette catégorie" });
     }
     res.status(200).json(fiches);
   } catch (error) {
@@ -100,7 +109,9 @@ exports.updateCategorie = async (req, res) => {
       where: { id: req.params.id },
     });
     if (updatedRows === 0) {
-      return res.status(404).json({ message: "Catégorie non trouvée ou pas de mise à jour" });
+      return res
+        .status(404)
+        .json({ message: "Catégorie non trouvée ou pas de mise à jour" });
     }
     res.status(200).json({ message: "Catégorie mise à jour avec succès" });
   } catch (error) {

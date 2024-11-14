@@ -21,6 +21,8 @@ module.exports = { sequelize, DataTypes, Op };
 // Middleware pour parser les données JSON
 app.use(express.json());
 
+app.use(cors());
+
 // Requires des routes
 const ficheRoutes = require("./routes/ficheRoutes");
 const categorieRoutes = require("./routes/categorieRoutes");
