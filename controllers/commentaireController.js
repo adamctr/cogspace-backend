@@ -1,3 +1,4 @@
+const { parse } = require("path");
 const { sequelize } = require("../models/index");
 const { Commentaires, Fiche, Utilisateurs } = sequelize.models;
 
@@ -5,7 +6,8 @@ class CommentaireController {
   // Créer un nouveau commentaire
   static async creerCommentaire(req, res) {
     try {
-      const { Contenu, FicheID, UtilisateurID } = req.body;
+      const { Contenu, FicheID, UtilisateurID, Position } = req.body;
+      console.log(req.body);
 
       // Vérifier si la fiche existe
       const fiche = await Fiche.findByPk(FicheID);
@@ -13,11 +15,20 @@ class CommentaireController {
         return res.status(404).json({ message: "Fiche non trouvée" });
       }
 
+      if (!Contenu) {
+        return res.status(400).json({ message: "Le contenu est requis" });
+      }
+
+      if (!UtilisateurID) {
+        return res.status(400).json({ message: "L'auteur est requis" });
+      }
+
       // Créer le commentaire
       const commentaire = await Commentaires.create({
         Contenu: Contenu,
         FicheID: FicheID,
         AuteurID: UtilisateurID,
+        Position: parseInt(Position),
       });
 
       res.status(201).json(commentaire);
